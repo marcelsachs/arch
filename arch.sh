@@ -1,5 +1,7 @@
 #!/bin/bash
+
 set -euo pipefail
+
 source config.txt
 
 echo "This will wipe your entire $DISK, you sure? (y/n)"
@@ -13,12 +15,15 @@ mkfs.fat -F32 "${DISK}p1"
 mkfs.ext4 "${DISK}p2"
 mount "${DISK}p2" /mnt
 mount --mkdir "${DISK}p1" /mnt/boot
-reflector --country "$COUNTRY" --age 12 --latest 10 --fastest 5 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
+
+reflector --country "$COUNTRY" --latest 10 --fastest 5 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
 pacstrap -K /mnt "${START_PACKAGES[@]}"
 genfstab -U /mnt >> /mnt/etc/fstab
+
 cp config.txt /mnt
-cp chroot.sh /mnt
-chmod +x chroot.sh
+cp chroot.sh /mnt && chmod +x /mnt/chroot.sh
+
 arch-chroot /mnt ./chroot.sh
+
 rm -rf /mnt/chroot.sh /mnt/config.txt
 echo "Finished. You can now 'umount -R /mnt' and then reboot."
