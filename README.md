@@ -1,3 +1,4 @@
+```
 git clone https://github.com/marcelsachs/arch.git
 cd arch
 vim config.txt
