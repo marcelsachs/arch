@@ -9,14 +9,14 @@ run_in_chroot() {
 }
 
 echo "==============================================="
-echo "Arch Linux Automated Installation"
+echo "Quick Arch Linux Installation"
 echo "==============================================="
 echo "Disk: $DISK"
 echo "Hostname: $HOSTNAME"
 echo "User: $USER_NAME"
 echo "Timezone: $TIMEZONE"
 echo "==============================================="
-echo "WARNING: This will COMPLETELY WIPE $DISK"
+echo "WARNING: COMPLETELY WIPE $DISK"
 echo "Type 'yes' to continue:"
 read -r confirm
 [[ "$confirm" == "yes" ]] || { echo "Installation cancelled."; exit 1; }
