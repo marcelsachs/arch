@@ -38,7 +38,7 @@ echo "-> Updating mirrorlist..."
 reflector --country "$COUNTRY" --latest 10 --fastest 5 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
 
 echo "-> Installing base system..."
-pacstrap -K /mnt "${START_PACKAGES[@]}"
+pacstrap -K /mnt "${PACKAGES[@]}"
 
 echo "-> Generating fstab..."
 genfstab -U /mnt >> /mnt/etc/fstab
@@ -63,37 +63,10 @@ run_in_chroot "echo 'KEYMAP=$KEYMAP' > /etc/vconsole.conf"
 run_in_chroot "echo '$HOSTNAME' > /etc/hostname"
 
 echo "-> Configuring network..."
-# Ethernet
-ETHERNET_INTERFACE=$(ip -o link show | awk -F': ' '/: en|: eth/ {print $2}' | head -n 1 || true)
-if [[ -n "$ETHERNET_INTERFACE" ]]; then
-    cat > /mnt/etc/systemd/network/10-wired.network <<EOF
-[Match]
-Name=$ETHERNET_INTERFACE
-
-[Network]
-DHCP=yes
-EOF
-fi
-
-WLAN_INTERFACE=$(ip -o link show | awk -F': ' '/: wl/ {print $2}' | head -n 1 || true)
-if [[ -n "$WLAN_INTERFACE" ]]; then
-    cat > /mnt/etc/systemd/network/20-wireless.network <<EOF
-[Match]
-Name=$WLAN_INTERFACE
-
-[Network]
-DHCP=yes
-EOF
-fi
-
-if [[ -n "$WIFI_SSID" ]] && [[ -n "$WIFI_PASSWORD" ]]; then
-    echo "-> Configuring WiFi..."
-    mkdir -p /mnt/var/lib/iwd
-    cat > /mnt/var/lib/iwd/${WIFI_SSID}.psk <<EOF
-[Security]
-PreSharedKey=$(echo -n "$WIFI_PASSWORD" | iwd-passphrase "$WIFI_SSID" | grep PreSharedKey= | cut -d= -f2)
-EOF
-fi
+run_in_chroot "ETHERNET_INTERFACE=$(ip -o link show | awk -F': ' '/: en|: eth/ {print $2}' | head -n 1 || true)"
+run_in_chroot "printf '[Match]\nName=%s\n\n[Network]\nDHCP=yes\n' "$ETHERNET_INTERFACE" > /etc/systemd/network/10-wired.network"
+run_in_chroot "WLAN_INTERFACE=$(ip -o link show | awk -F': ' '/: wl/ {print $2}' | head -n 1 || true)"
+run_in_chroot "printf '[Match]\nName=%s\n\n[Network]\nDHCP=yes\n' "$WLAN_INTERFACE" > /etc/systemd/network/20-wireless.network"
 
 echo "-> Installing bootloader..."
 run_in_chroot "grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB"
@@ -104,11 +77,6 @@ echo "-> Creating user $USER_NAME..."
 run_in_chroot "useradd -m -d '$HOME_DIR' -s /bin/bash '$USER_NAME'"
 run_in_chroot "echo '$USER_NAME:$USER_PASSWORD' | chpasswd"
 run_in_chroot "echo '$USER_NAME ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/$USER_NAME"
-
-if [[ ${#USER_PACKAGES[@]} -gt 0 ]]; then
-    echo "-> Installing user packages..."
-    run_in_chroot "pacman -Syu --noconfirm ${USER_PACKAGES[*]}"
-fi
 
 if [[ -n "$GITHUB_REPO" ]]; then
     echo "-> Cloning user repository..."
@@ -123,9 +91,9 @@ done
 rm -f /mnt/root/config.txt
 
 echo "==============================================="
-echo "Installation complete!"
+echo "FINISHED!"
 echo "==============================================="
-echo "You can now run:"
+echo "Now do:"
 echo "  umount -R /mnt"
 echo "  reboot"
 echo "==============================================="
