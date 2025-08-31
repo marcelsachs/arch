@@ -41,6 +41,7 @@ START_PACKAGES=(
     "os-prober"
     "sudo"
     "tmux"
+    "wget"
 )
 
 USER_PACKAGES=(
