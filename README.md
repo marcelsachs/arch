@@ -4,3 +4,5 @@ cd arch
 vim config.txt
 chmod +x install.sh
 ./install.sh
+
+(boot from live arch.iso image from USB.)
