@@ -2,7 +2,7 @@ DISK="/dev/nvme0n1"
 EFI_SIZE="512M"
 ROOT_SIZE="420G"
 HOSTNAME="arch"
-USER_NAME="sachs"
+USER_NAME=""
 USER_PASSWORD=""
 ROOT_PASSWORD="root"
 HOME_DIR="/$USER_NAME"
@@ -10,9 +10,9 @@ COUNTRY="Germany"
 TIMEZONE="Europe/Berlin"
 LOCALES=("en_US.UTF-8" "de_DE.UTF-8")
 LANG="en_US.UTF-8"
-KEYMAP="neoqwertz"
-WIFI_SSID="wr841"
-WIFI_PASSWORD="43904334"
+KEYMAP=""
+WIFI_SSID=""
+WIFI_PASSWORD=""
 GITHUB_REPO="https://github.com/marcelsachs/mybag.git"
 
 SERVICES=(
@@ -24,7 +24,7 @@ SERVICES=(
     "systemd-resolved"
 )
 
-START_PACKAGES=(
+PACKAGES=(
     "base"
     "bluez"
     "bluez-utils"
@@ -42,9 +42,7 @@ START_PACKAGES=(
     "sudo"
     "tmux"
     "wget"
-)
 
-USER_PACKAGES=(
     "arm-none-eabi-binutils"
     "arm-none-eabi-gcc"
     "arm-none-eabi-gdb"
