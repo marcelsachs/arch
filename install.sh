@@ -2,7 +2,6 @@
 set -euo pipefail
 source config.txt
 
-# Function to get partition name based on disk type
 get_partition_name() {
     local disk="$1"
     local partition_num="$2"
@@ -48,9 +47,8 @@ if [[ "$BOOT_MODE" == "uefi" ]]; then
     sgdisk -n 1:0:+"$EFI_SIZE" -t 1:ef00 "$DISK"
     sgdisk -n 2:0:+"$ROOT_SIZE" -t 2:8300 "$DISK"
 else
-    # BIOS partitioning with BIOS boot partition
     sgdisk -n 1:0:+1M -t 1:ef02 "$DISK"           # BIOS boot partition (1MB)
-    sgdisk -n 2:0:+"$ROOT_SIZE" -t 2:8300 "$DISK"  # Root partition
+    sgdisk -n 2:0:+"$ROOT_SIZE" -t 2:8300 "$DISK" 
 fi
 
 echo "-> Formatting partitions..."
