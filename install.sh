@@ -63,10 +63,17 @@ run_in_chroot "echo 'KEYMAP=$KEYMAP' > /etc/vconsole.conf"
 run_in_chroot "echo '$HOSTNAME' > /etc/hostname"
 
 echo "-> Configuring network..."
-run_in_chroot "ETHERNET_INTERFACE=$(ip -o link show | awk -F': ' '/: en|: eth/ {print $2}' | head -n 1 || true)"
-run_in_chroot "printf '[Match]\nName=%s\n\n[Network]\nDHCP=yes\n' "$ETHERNET_INTERFACE" > /etc/systemd/network/10-wired.network"
-run_in_chroot "WLAN_INTERFACE=$(ip -o link show | awk -F': ' '/: wl/ {print $2}' | head -n 1 || true)"
-run_in_chroot "printf '[Match]\nName=%s\n\n[Network]\nDHCP=yes\n' "$WLAN_INTERFACE" > /etc/systemd/network/20-wireless.network"
+{
+    run_in_chroot 'ETHERNET_INTERFACE=$(ip -o link show | awk -F": " "/: en|: eth/ {print \$2}" | head -n 1 || true)
+    if [[ -n "$ETHERNET_INTERFACE" ]]; then
+        printf "[Match]\nName=%s\n\n[Network]\nDHCP=yes\n" "$ETHERNET_INTERFACE" > /etc/systemd/network/10-wired.network
+    fi'
+
+    run_in_chroot 'WLAN_INTERFACE=$(ip -o link show | awk -F": " "/: wl/ {print \$2}" | head -n 1 || true)
+    if [[ -n "$WLAN_INTERFACE" ]]; then
+        printf "[Match]\nName=%s\n\n[Network]\nDHCP=yes\n" "$WLAN_INTERFACE" > /etc/systemd/network/20-wireless.network
+    fi'
+} || echo "Warning: Network configuration failed, but continuing installation..."
 
 echo "-> Installing bootloader..."
 run_in_chroot "grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB"
