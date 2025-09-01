@@ -48,8 +48,9 @@ if [[ "$BOOT_MODE" == "uefi" ]]; then
     sgdisk -n 1:0:+"$EFI_SIZE" -t 1:ef00 "$DISK"
     sgdisk -n 2:0:+"$ROOT_SIZE" -t 2:8300 "$DISK"
 else
-    # BIOS partitioning (no EFI partition needed)
-    sgdisk -n 1:0:+"$ROOT_SIZE" -t 1:8300 "$DISK"
+    # BIOS partitioning with BIOS boot partition
+    sgdisk -n 1:0:+1M -t 1:ef02 "$DISK"           # BIOS boot partition (1MB)
+    sgdisk -n 2:0:+"$ROOT_SIZE" -t 2:8300 "$DISK"  # Root partition
 fi
 
 echo "-> Formatting partitions..."
@@ -64,7 +65,8 @@ if [[ "$BOOT_MODE" == "uefi" ]]; then
     mount "$ROOT_PARTITION" /mnt
     mount --mkdir "$EFI_PARTITION" /mnt/boot
 else
-    ROOT_PARTITION=$(get_partition_name "$DISK" "1")
+    # BIOS mode - partition 1 is BIOS boot (no filesystem), partition 2 is root
+    ROOT_PARTITION=$(get_partition_name "$DISK" "2")
     
     mkfs.ext4 "$ROOT_PARTITION"
     
