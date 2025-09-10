@@ -14,22 +14,25 @@ KEYMAP="neoqwertz"
 WIFI_SSID="WLAN-463866"
 WIFI_PASSWORD="43904334"
 GITHUB_REPO="[https://github.com/marcelsachs/mybag.git](https://github.com/marcelsachs/mybag.git)"
+
 SERVICES=(
     "iwd"
     "sshd"
     "systemd-networkd"
     "systemd-resolved"
 )
+
 PACKAGES=(
     "base"
-    "efibootmgr"
+    "chromium"
+    "cpupower"
     "git"
-    "grub"
     "intel-ucode"
     "iwd"
     "linux"
     "linux-firmware"
+    "lm_sensors"
+    "nano"
     "openssh"
     "sudo"
-    "lm_sensors"
 )
