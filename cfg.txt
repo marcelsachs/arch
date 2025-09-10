@@ -16,6 +16,7 @@ WIFI_PASSWORD="43904334"
 GITHUB_REPO="[https://github.com/marcelsachs/mybag.git](https://github.com/marcelsachs/mybag.git)"
 
 SERVICES=(
+    "cpupower"
     "iwd"
     "sshd"
     "systemd-networkd"
@@ -26,6 +27,7 @@ PACKAGES=(
     "base"
     "chromium"
     "cpupower"
+    "foot"
     "git"
     "intel-ucode"
     "iwd"
@@ -36,5 +38,7 @@ PACKAGES=(
     "nano"
     "openssh"
     "sudo"
+    "sway"
     "ttc-iosevka"
+    "wmenu"
 )
