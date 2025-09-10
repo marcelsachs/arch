@@ -6,3 +6,6 @@ cd arch
 vim config.txt
 chmod +x install.sh
 ./install.sh
+
+locale-gen
+cp i3status
