@@ -35,4 +35,5 @@ PACKAGES=(
     "nano"
     "openssh"
     "sudo"
+    "ttc-iosevka"
 )
