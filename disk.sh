@@ -5,6 +5,10 @@ set -euo pipefail
 
 source config.sh  # In case run standalone, but main sources it
 
+get_partition_name() {
+    echo "${DISK}p${1}"
+}
+
 echo "-> Partitioning disk..."
 sgdisk -Z "$DISK"
 sgdisk -n 1:0:+"$EFI_SIZE" -t 1:ef00 "$DISK"
