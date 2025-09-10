@@ -3,6 +3,7 @@
 
 set -euo pipefail
 
+cd /root
 source config.sh
 
 source network.sh
