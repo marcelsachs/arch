@@ -13,7 +13,7 @@ LANG="en_US.UTF-8"
 KEYMAP="neoqwertz"
 WIFI_SSID="WLAN-463866"
 WIFI_PASSWORD="43904334"
-GITHUB_REPO="[https://github.com/marcelsachs/mybag.git](https://github.com/marcelsachs/mybag.git)"
+GITHUB_REPO="https://github.com/marcelsachs/mybag.git"
 
 SERVICES=(
     "cpupower"
@@ -25,9 +25,7 @@ SERVICES=(
 
 PACKAGES=(
     "base"
-    "chromium"
     "cpupower"
-    "foot"
     "git"
     "intel-ucode"
     "iwd"
@@ -41,7 +39,6 @@ PACKAGES=(
     "nano"
     "openssh"
     "sudo"
-    "sway"
     "ttc-iosevka"
     "which"
     "wget"
