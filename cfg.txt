@@ -32,6 +32,7 @@ PACKAGES=(
     "linux"
     "linux-firmware"
     "lm_sensors"
+    "make"
     "nano"
     "openssh"
     "sudo"
