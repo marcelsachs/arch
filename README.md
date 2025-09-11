@@ -18,9 +18,15 @@ libx11
 libxt
 gcc
 gdb
+lsusb
+xorg-xwayland
+
 
 echo "nameserver 8.8.8.8" | sudo tee /etc/resolv.conf
 sudo systemctl restart systemd-resolved
 git clone https://aur.archlinux.org/yay.git
 cd yay
 makepkg -si
+
+directly configure
+sway, foot, i3status
