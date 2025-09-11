@@ -59,7 +59,6 @@ PACKAGES=(
     "linux"
     "linux-firmware"
     "lm_sensors"
-    "lsusb"
     "man-db"
     "man-pages"
     "make"
