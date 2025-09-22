@@ -81,8 +81,8 @@ mkdir -p "$HOME/.config/i3status"
 mkdir -p "$HOME/.config/foot"
 mkdir -p "$HOME/.config/sway"
 
-cp "$HOME/mybag/.config/foot/foot.ini" "$HOME/.config/foot/"
-cp "$HOME/mybag/.config/i3status/config" "$HOME/.config/i3status/"
-cp "$HOME/mybag/.config/sway/config" "$HOME/.config/sway/"
+cp "$HOME/arch/.config/foot/foot.ini" "$HOME/.config/foot/"
+cp "$HOME/arch/.config/i3status/config" "$HOME/.config/i3status/"
+cp "$HOME/arch/.config/sway/config" "$HOME/.config/sway/"
 
 echo "Setup OK! Get to work now."
