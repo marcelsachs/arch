@@ -1,0 +1,63 @@
+# default config: /etc/i3status.conf
+
+general {
+    colors = true
+    interval = 1
+}
+
+order += "wireless wlan0"
+order += "ethernet enp113s0" // eno1
+order += "cpu_temperature 0"
+order += "cpu_usage"
+order += "load"
+order += "memory"
+order += "battery 1"
+order += "volume master"
+order += "tztime local"
+
+wireless wlan0 {
+    format_up = "W: %ip (%essid %quality) "
+    format_down = "W: down "
+}
+
+ethernet enp113s0 { // eno1
+    format_up = " E: %ip "
+    format_down = " E: down "
+}
+
+cpu_temperature 0 {
+    format = " %degrees°C "
+    path = "/sys/devices/platform/coretemp.0/hwmon/hwmon7/temp1_input" // ../hwmon3/temp2_input
+}
+
+cpu_usage {
+    format = " CPU: %usage "
+}
+
+load {
+    format = " load: %1min "
+}
+
+memory {
+    format = " mem: %used "
+}
+
+volume master {
+    format = " ♪ %volume "
+    format_muted = " muted (%volume) "
+    device = "default"
+}
+
+battery 1 {
+    format = "%status %percentage"
+    format_percentage = "%.00f%s"
+    status_chr = "⚡CHR"
+    status_bat = "BAT"
+    status_full = "FULL"
+    path = "/sys/class/power_supply/BAT1/uevent" // BAT0
+    low_threshold = 20
+}
+
+tztime local {
+    format = " %d.%m.%Y | %H:%M:%S "
+}
