@@ -1,17 +1,17 @@
 #!/bin/bash
-# install.sh - Complete Arch Linux installation script
+# install_dell.sh - Arch Linux installation script for Dell Latitude E6410
 
 set -euo pipefail
 
 # ===============================================
 # CONFIGURATION
 # ===============================================
-DISK="/dev/nvme0n1"
+DISK="/dev/sda"
 EFI_SIZE="512M"
-ROOT_SIZE="420G"
-HOSTNAME="arch"
+ROOT_SIZE="142G"
+HOSTNAME="dell"
 USER_NAME="sachs"
-USER_PASSWORD="arch"
+USER_PASSWORD="dell"
 ROOT_PASSWORD="root"
 HOME_DIR="/$USER_NAME"
 COUNTRY="Germany"
@@ -45,12 +45,16 @@ PACKAGES=(
     "chromium"
     "cmake"
     "cpupower"
+    "dmenu"
+    "fastfetch"
     "feh"
     "gcc"
     "gdb"
     "git"
     "fastfetch"
+    "i3"
     "i3status"
+    "i3-wm"
     "intel-ucode"
     "iwd"
     "less"
@@ -62,29 +66,37 @@ PACKAGES=(
     "man-db"
     "man-pages"
     "make"
+    "mesa"
     "minicom"
     "nano"
     "openssh"
     "openocd"
     "parted"
     "pavucontrol"
+    "pcmanfm"
     "pulseaudio"
     "pulseaudio-bluetooth"
     "python"
     "python-pip"
     "ranger"
+    "screengrab"
     "stlink"
     "sudo"
     "tcpdump"
     "tree"
     "ttc-iosevka"
+    "ttf-ibm-plex"
     "unzip"
     "usbutils"
     "usbview"
+    "vim"
     "which"
     "wget"
-    "wmenu"
-    "xorg-xwayland"
+    "xclip"
+    "xorg-server"
+    "xorg-init"
+    "xorg-randr"
+    "zathura-pdf-mupdf"
 )
 
 # ===============================================
@@ -111,22 +123,19 @@ read -r confirm
 [[ "$confirm" == "yes" ]] || { echo "Installation cancelled."; exit 1; }
 
 # ===============================================
-# DISK SETUP
+# DISK SETUP (BIOS/MBR)
 # ===============================================
 echo "-> Partitioning disk..."
-sgdisk -Z "$DISK"
-sgdisk -n 1:0:+"$EFI_SIZE" -t 1:ef00 "$DISK"
-sgdisk -n 2:0:+"$ROOT_SIZE" -t 2:8300 "$DISK"
+parted -s "$DISK" mklabel msdos
+parted -s "$DISK" mkpart primary ext4 1MiB "$ROOT_SIZE"
+parted -s "$DISK" set 1 boot on
 
 echo "-> Formatting partitions..."
-EFI_PARTITION="${DISK}p1"
-ROOT_PARTITION="${DISK}p2"
-mkfs.fat -F32 "$EFI_PARTITION"
+ROOT_PARTITION="${DISK}1"
 mkfs.ext4 "$ROOT_PARTITION"
 
 echo "-> Mounting partitions..."
 mount "$ROOT_PARTITION" /mnt
-mount --mkdir "$EFI_PARTITION" /mnt/boot
 
 # ===============================================
 # BASE SYSTEM
@@ -181,26 +190,16 @@ run_in_chroot "echo '$HOSTNAME' > /etc/hostname"
 run_in_chroot "echo -e '127.0.0.1 localhost\n::1 localhost' > /etc/hosts"
 
 # ===============================================
-# BOOTLOADER
+# BOOTLOADER (GRUB for BIOS/Legacy Boot)
 # ===============================================
-echo "-> Installing bootloader (systemd-boot)..."
-run_in_chroot "bootctl install"
+echo "-> Installing GRUB bootloader..."
+run_in_chroot "pacman -S --noconfirm grub"
 
-ROOT_PARTUUID=$(blkid -s PARTUUID -o value "$ROOT_PARTITION")
-cat << EOF > /mnt/boot/loader/entries/arch.conf
-title   Arch Linux
-linux   /vmlinuz-linux
-initrd  /intel-ucode.img
-initrd  /initramfs-linux.img
-options root=PARTUUID=$ROOT_PARTUUID rw
-EOF
+# Install GRUB to the MBR (not partition)
+run_in_chroot "grub-install --target=i386-pc $DISK"
 
-cat << EOF > /mnt/boot/loader/loader.conf
-default arch.conf
-timeout 5
-console-mode max
-editor  no
-EOF
+# Generate GRUB configuration
+run_in_chroot "grub-mkconfig -o /boot/grub/grub.cfg"
 
 # ===============================================
 # USER SETUP
