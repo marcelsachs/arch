@@ -8,13 +8,6 @@ sudo timedatectl set-ntp true
 
 sudo ln -sf ../run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
 
-echo "Installing packages with pacman..."
-sudo pacman -S --needed --noconfirm sway foot wmenu
-
-echo "Copying home directory configurations..."
-cp .config/bash "$HOME/.bashrc"
-cp .config/vim "$HOME/.vimrc"
-
 echo "Configuring git..."
 git config --global user.name "marcelsachs"
 git config --global user.email "sachsmarcel@proton.me"
@@ -31,18 +24,6 @@ eval "$(ssh-agent -s)"
 ssh-add ~/.ssh/id_ed25519
 echo "Public SSH key:"
 cat ~/.ssh/id_ed25519.pub
-
-if command -v xclip > /dev/null && [ -n "$DISPLAY" ]; then
-    cat ~/.ssh/id_ed25519.pub | xclip -selection clipboard 2>/dev/null
-    if [ $? -eq 0 ]; then
-        echo "Public key copied to clipboard with xclip."
-    else
-        echo "Could not copy to clipboard. Copy the key manually."
-    fi
-else
-    echo "No graphical display available. Copy the key manually."
-fi
-
 echo "Test SSH connection with: ssh -T git@github.com"
 
 echo "Installing yay AUR helper..."
@@ -56,9 +37,6 @@ if ! command -v yay &> /dev/null; then
 else
     echo "yay is already installed"
 fi
-
-echo "Installing ncurses5-compat-libs..."
-yay -S --noconfirm ncurses5-compat-libs
 
 echo "Building vim from source..."
 if [ ! -d "$HOME/vim" ]; then
@@ -76,7 +54,9 @@ echo "Vim built and installed. Checking clipboard support:"
 vim --version | grep clipboard
 
 echo "Configuring sway, foot, and i3status..."
-
+echo "Copying home directory configurations..."
+cp .config/bash "$HOME/.bashrc"
+cp .config/vim "$HOME/.vimrc"
 mkdir -p "$HOME/.config/i3status"
 mkdir -p "$HOME/.config/foot"
 mkdir -p "$HOME/.config/sway"
