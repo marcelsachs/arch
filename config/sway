@@ -75,9 +75,6 @@ set $menu wmenu-run
     # Start chromium
     bindsym $mod+c exec chromium
 
-    # Start obsidian
-    bindsym $mod+o exec obsidian
-
     # Drag floating windows by holding down $mod and left mouse button.
     # Resize them with right mouse button + $mod.
     # Despite the name, also works for non-floating windows.
